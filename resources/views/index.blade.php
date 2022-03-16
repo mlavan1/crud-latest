@@ -288,13 +288,13 @@
 
         $('body').on('click', '.editBook2', function () {
             var book_id = $(this).data('id');
-            // alert(book_id);
             $.get("{{ url('edit') }}"+'/'+book_id, function (data) {
                 $('#modelHeading2').html("Edit Book");
                 $('#saveBtn2').val("edit-book");
                 $('#ajaxModel2').modal('show');
                 $('#book_id').val(data.id);
                 $('#bookName').val(data.book_name);
+                $('#categorySelector').val(data.category_id);
                 $('#Price').val(data.price);
                 $('#Author').val(data.author);
                 // $('#categorySelector').val(data.category_name);
@@ -332,7 +332,7 @@
             confirm("Are You sure want to delete ?");
         
             $.ajax({
-                type: "DELETE",
+                // type: "DELETE",
                 url: "{{ url('delete') }}"+'/'+book_id,
                 success: function (data) {
                     table.draw();

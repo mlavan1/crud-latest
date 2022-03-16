@@ -55,7 +55,7 @@ class CategoryController extends Controller
     public function delete($id)
     {
         Book::find($id)->delete();
-        
+        // Category::find($id)->delete(); 
      
         return response()->json(['success'=>'Book deleted successfully.']);
     }
@@ -116,7 +116,7 @@ class CategoryController extends Controller
     public function edit2($id){
         // dd($id);
         $book= Book::find($id);
-        $category=Book::find($id)->category;
+        $category=Book::find($id)->category->category_name;
         
         return response()->json($book);
         

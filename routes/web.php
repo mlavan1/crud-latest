@@ -28,7 +28,7 @@ Route::get('edit/{id}',[CategoryController::class,'edit2']);
 
 Route::get('destroy/{id}',[CategoryController::class,'destroy']);
 
-Route::delete('delete/{id}',[CategoryController::class,'delete']);
+Route::get('delete/{id}',[CategoryController::class,'delete']);
 
 
 
