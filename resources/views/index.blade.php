@@ -225,6 +225,19 @@
             $('#bookForm').trigger("reset");
             $('#modelHeading').html("Create New Category");
             $('#ajaxModel').modal('show');
+            $('#categorySelector').change(function(){
+                $.ajax({
+                    type:"get",
+                    url:"{{ route('index.index') }}",
+                    success:function(){
+                        $.each(category,function(key,value){
+                            $("#categorySelector").append('<option value="'+key+'">'+value+'</option>');
+                        });
+                    }
+                    
+
+                });
+            });
         });
 
         $('#createNewBookHandler').click(function () {
@@ -233,6 +246,7 @@
             $('#bookForm').trigger("reset");
             $('#modelHeading2').html("Create New Book");
             $('#ajaxModel2').modal('show');
+
         });
 
 
@@ -327,6 +341,7 @@
                 url:'/home/'+book_id+'/edit',
                 dataType:'json',
                 success:function(data){
+                    $('#modelHeading2').html("Edit Book");
                     $('#book_id').val(data.id);
                     $('#bookName').val(data.book_name);
                     $('#categorySelector').val(data.category_id);

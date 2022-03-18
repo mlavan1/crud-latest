@@ -96,6 +96,7 @@ class BookController extends Controller
         // $book-> author      =   $request    ->input('Author');
         // $book-> category_id =   $request    ->input('categorySelector');
         // $book-> save();
+        // dd ($request);
         $form_data=array(
             'book_name' => $request->bookName,
             'price' => $request->Price,
