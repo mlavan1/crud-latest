@@ -13,7 +13,8 @@ class Book extends Model
         'id',
         'book_name',
         'price',
-        'author'
+        'author',
+        'category_id'
     ];
 
     protected $table="books";
