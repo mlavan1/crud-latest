@@ -16,7 +16,7 @@ class BookController extends Controller
      */
     public function index(Request $request)
     {
-        $books=Book::latest()->get();
+        $book=Book::latest()->get();
         if ($request->ajax()) {
             $data = Book::latest()->get();
             return Datatables::of($data)
@@ -34,13 +34,8 @@ class BookController extends Controller
                     ->rawColumns(['category_name','action'])
                     ->make(true);
         }
-        // return view('index',compact('books'));   
-        return view('index',compact('books')); 
-        //test text
-
-        
+        return view('index',compact('book'));        
     }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -81,7 +76,8 @@ class BookController extends Controller
      */
     public function edit($id)
     {
-        //
+        $book= Book::find($id);
+        return response()->json($book);
     }
 
     /**
@@ -91,9 +87,23 @@ class BookController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        // dd($request);
+        // $book= new Book;
+        // $book-> book_name   =   $request    ->input('bookName');
+        // $book-> price       =   $request    ->input('Price');
+        // $book-> author      =   $request    ->input('Author');
+        // $book-> category_id =   $request    ->input('categorySelector');
+        // $book-> save();
+        $form_data=array(
+            'book_name' => $request->bookName,
+            'price' => $request->Price,
+            'author' => $request->Author,
+            'category_id' => $request->categorySelector,
+        );
+        Book::find($request->book_id)->update($form_data);
+        return response()->json(['success','Data successfully updated']);
     }
 
     /**

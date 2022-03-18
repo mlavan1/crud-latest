@@ -18,9 +18,7 @@ class CategoryController extends Controller
      */
     public function index(Request $request)
     {
-        $category = Category::latest()->get();
-        $book=Book::latest()->get();
-        
+        $category = Category::latest()->get();       
         if ($request->ajax()) {
             $data = Category::latest()->get();
             return Datatables::of($data)
@@ -36,10 +34,7 @@ class CategoryController extends Controller
                     ->rawColumns(['action'])
                     ->make(true);
         }
-     
-        return view('index',compact('category','book'));   
-        // return Book::find(3)->category->category_name;
-        
+        return view('index',compact('category'));   
     }
 
     /**
@@ -55,9 +50,7 @@ class CategoryController extends Controller
     public function delete($id)
     {
         Book::find($id)->delete();
-        // Category::find($id)->delete(); 
-     
-        return response()->json(['success'=>'Book deleted successfully.']);
+        // return response()->json(['success'=>'Book deleted successfully.']);
     }
 
     /**
@@ -68,7 +61,6 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request);
         Category::updateOrCreate(['id' => $request->category_id],['category_name' => $request->category_name]);     
         return response()->json(['success'=>'Book saved successfully.']);
     }
@@ -91,7 +83,7 @@ class CategoryController extends Controller
         $book-> book_name   =   $request    ->input('bookName');
         $book-> price       =   $request    ->input('Price');
         $book-> author      =   $request    ->input('Author');
-        $book-> category_id      =   $request    ->input('categorySelector');
+        $book-> category_id =   $request    ->input('categorySelector');
         $book-> save();
         // $book-> category()->attach($request ->  input('categorySelector'));
         

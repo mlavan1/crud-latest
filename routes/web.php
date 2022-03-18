@@ -20,7 +20,11 @@ Route::get('/', function () {
 
 Route::resource('index',CategoryController::class);
 
+Route::resource('home',BookController::class);
+
 Route::post('saveBook',[CategoryController::class,'saveBook']); 
+
+Route::post('updateBook',[BookController::class,'update']); 
 
 Route::get('indexBook','App\Http\Controllers\BookController@index'); 
 

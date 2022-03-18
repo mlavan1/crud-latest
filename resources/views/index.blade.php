@@ -70,7 +70,7 @@
     </div>
 </div>
 
-
+{{-- Book Registration --}}
 
 <div class="book-container">
     <h1>Book</h1>
@@ -83,7 +83,8 @@
                 </div>
                 <div class="modal-body">
                     <form id="bookForm2" name="bookForm2" class="form-horizontal">
-                       <input type="hidden" name="book_id" id="book_id">
+                       <input type="hidden" name="book_id" id="book_id"/>   
+                       <input type="hidden" name="action" id="action" value="Add"/>   
                         <div class="form-group">
                             <label for="name" class="col-sm-2 control-label">Name</label>
                             <div class="col-sm-12">
@@ -109,7 +110,7 @@
                             </div>
                         </div>
                         <div class="col-sm-offset-2 col-sm-10">
-                         <button type="submit" class="btn btn-primary" id="saveBtn2" value="create">Save changes</button><br>
+                         <input type="submit" class="btn btn-primary" id="saveBtn2" value="Add Book"><br>
                          <span id ="notification"></span>
                         <br><br>
                         </div>
@@ -121,7 +122,7 @@
 </div>
 
 <div class="container book-container">
-    <table class="table table-bordered data-table2"  id="table2" width="100%">
+    <table class="table table-bordered data-table"  id="table2" width="100%">
         <thead>
             <tr>
                 <th>No</th>
@@ -162,6 +163,20 @@
     $(function () {
 
         // Security Token
+        function fetchBooks(){
+            $.ajax({
+                url: "{{ route('home.index') }}",
+                type: "GET",
+                dataType: 'json',
+                success: function (data) {
+                    alert(data);
+                },
+                error: function (data) {
+                    console.log('Error:', data);
+                    $('#saveBtn').html('Error : Please Try Again.');
+                }
+            });
+        }
 
         $.ajaxSetup({
             headers: {
@@ -189,7 +204,7 @@
             
             processing: true,
             serverSide: true,
-            ajax: "indexBook",
+            ajax: "{{ route('home.index') }}",
             columns: [
                 {data:  'id',            name:  'id'            },
                 {data:  'book_name',     name:  'book_name'     },
@@ -249,20 +264,28 @@
         });
 
 
-        $('#saveBtn2').click(function (e) {
+        $('#bookForm2').on('submit',function (e) {
             e.preventDefault();
-            $(this).html('Saved');        
+            $('#saveBtn2').val('Saved');  
+            var action_url="";
+            if ($('#action').val() == 'Add'){
+                action_url="{{url('saveBook') }}";
+            } 
+            if ($('#action').val() == 'Edit'){
+                action_url="{{ url('updateBook') }}"
+            }
+                 
             $.ajax({
                 data: $('#bookForm2').serialize(),
-                url: "{{url('saveBook') }}",
+                url: action_url,
                 type: "POST",
                 dataType: 'json',
                 success: function (data) {
-
+                    
                     $('#bookForm2').trigger("reset");
                     $('#ajaxModel2').modal('hide');
-                    table.draw();
-                
+                    // table.draw();
+                    $('#table2').DataTable().ajax.reload();
                 },
                 error: function (data) {
                     console.log('Error:', data);
@@ -288,17 +311,31 @@
 
         $('body').on('click', '.editBook2', function () {
             var book_id = $(this).data('id');
-            $.get("{{ url('edit') }}"+'/'+book_id, function (data) {
-                $('#modelHeading2').html("Edit Book");
-                $('#saveBtn2').val("edit-book");
-                $('#ajaxModel2').modal('show');
-                $('#book_id').val(data.id);
-                $('#bookName').val(data.book_name);
-                $('#categorySelector').val(data.category_id);
-                $('#Price').val(data.price);
-                $('#Author').val(data.author);
-                // $('#categorySelector').val(data.category_name);
-            })
+            // alert (book_id);
+            // $.get("{{ url('edit') }}"+'/'+book_id, function (data) {
+            //     $('#modelHeading2').html("Edit Book");
+            //     $('#saveBtn2').val("edit-book");
+            //     $('#ajaxModel2').modal('show');
+            //     $('#book_id').val(data.id);
+            //     $('#bookName').val(data.book_name);
+            //     $('#categorySelector').val(data.category_id);
+            //     $('#Price').val(data.price);
+            //     $('#Author').val(data.author);
+            //     // $('#categorySelector').val(data.category_name);
+            // })
+            $.ajax({
+                url:'/home/'+book_id+'/edit',
+                dataType:'json',
+                success:function(data){
+                    $('#book_id').val(data.id);
+                    $('#bookName').val(data.book_name);
+                    $('#categorySelector').val(data.category_id);
+                    $('#Price').val(data.price);
+                    $('#Author').val(data.author);
+                    $('#ajaxModel2').modal('show');
+                    $('#action').val('Edit');
+                }
+            });
         });
 
 
@@ -335,7 +372,8 @@
                 // type: "DELETE",
                 url: "{{ url('delete') }}"+'/'+book_id,
                 success: function (data) {
-                    table.draw();
+                    // table.draw();
+                    $('#table2').DataTable().ajax.reload();
                 },
                 error: function (data) {
                     console.log('Error:', data);
